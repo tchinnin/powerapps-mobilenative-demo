@@ -1,0 +1,9 @@
+{
+  "environmentUrl": "https://chinnin-tech-dev.crm4.dynamics.com",
+  "environmentId": "d6b0b2cd-588d-4cb1-b657-6a8ad7951d40",
+  "displayName": "DEV",
+  "tenantId": "be91cf8c-1bdb-4e16-9c30-5276f42e7e8b",
+  "clusterEnvironment": "Prod",
+  "clusterGeoName": "EU",
+  "source": "cache"
+}
