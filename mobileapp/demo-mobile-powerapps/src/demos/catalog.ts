@@ -29,7 +29,8 @@ export type DemoRoute =
   | '/voice'
   | '/geolocation'
   | '/swipe'
-  | '/face-id';
+  | '/face-id'
+  | '/toasts';
 
 export type DemoTag = { label: string; tone: TagTone };
 
@@ -297,6 +298,31 @@ export const DEMOS: Demo[] = [
       'Aucun gabarit biométrique ne transite par l’app',
     ],
     resultLabel: 'Authentifié',
+  },
+  {
+    id: 'toasts',
+    ready: true,
+    route: '/toasts',
+    group: 'system',
+    icon: 'chatbox-ellipses-outline',
+    title: 'Toasts et alertes',
+    subtitle: 'Messages système natifs',
+    long: "Confirmer une action avec le toast ou l'alerte du système, plutôt qu'avec un bandeau dessiné par l'app.",
+    hero: '[Toast système]',
+    cta: 'Afficher le toast',
+    running: 'Affichage…',
+    tags: [
+      { label: 'UI système', tone: 'tint' },
+      { label: 'Fonctionne hors-ligne', tone: 'green' },
+      { label: 'Complet sur iOS', tone: 'blue' },
+    ],
+    bullets: [
+      'Toast discret en haut ou en bas (iOS)',
+      'Alerte centrée : succès, erreur, favori',
+      'Spinner pendant un envoi, puis confirmation',
+      'Vibration jouée par le système (iOS), sans expo-haptics',
+    ],
+    resultLabel: 'Dernier message',
   },
   {
     id: 'offline',
