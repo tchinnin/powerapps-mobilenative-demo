@@ -247,8 +247,8 @@ export const DEMOS: Demo[] = [
     bullets: [
       'Seuil de validation à 90 px',
       'Rail coloré et libellé pendant le geste',
-      'Appui long 0,5 s : menu contextuel',
-      'Retour visuel seul, sans haptique',
+      'Appui long 0,5 s : le menu s’ouvre sans relâcher',
+      'Vibration à l’ouverture du menu (sans expo-haptics)',
     ],
     resultLabel: 'Cartes réinitialisées',
   },

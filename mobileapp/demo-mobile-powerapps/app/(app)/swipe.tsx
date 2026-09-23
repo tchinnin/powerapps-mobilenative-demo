@@ -1,6 +1,7 @@
 import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { Stack, useRouter } from 'expo-router';
+import { Vibration } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   Easing,
@@ -39,6 +40,21 @@ const FAIL_OFFSET_Y = 16;
 const LONG_PRESS_MS = 480;
 /** How far the finger may wander and still count as a long press. */
 const LONG_PRESS_SLOP = 12;
+/** Android honours the duration; iOS ignores it and plays its fixed system buzz. */
+const LONG_PRESS_VIBRATION_MS = 15;
+
+/**
+ * React Native core `Vibration`, not `expo-haptics` (banned: its native module
+ * is not in the rewrap binary). Guarded so a missing module never takes the
+ * menu down with it.
+ */
+function vibrate() {
+  try {
+    Vibration.vibrate(LONG_PRESS_VIBRATION_MS);
+  } catch {
+    // No vibrator, or the module is absent — the menu is feedback enough.
+  }
+}
 
 type Resolution = 'done' | 'later';
 
@@ -116,9 +132,12 @@ function SwipeCard({
     [card, onLongPress],
   );
 
-  // Exclusive, pan first: a gesture that becomes a drag can never also fire the
-  // long press, which is what made the menu pop open mid-swipe.
-  const gesture = React.useMemo(() => Gesture.Exclusive(pan, longPress), [pan, longPress]);
+  // Race, not Exclusive: Exclusive made the long press wait for the pan to
+  // *fail*, which only happens when the finger lifts — so the menu opened on
+  // release. With Race, whichever activates first cancels the other: the long
+  // press fires while the finger is still down (like iOS), and a drag past
+  // ACTIVE_OFFSET_X — or LONG_PRESS_SLOP — still kills it before it can fire.
+  const gesture = React.useMemo(() => Gesture.Race(pan, longPress), [pan, longPress]);
 
   const cardStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: translateX.value }],
@@ -282,6 +301,7 @@ export default function SwipeDemoScreen() {
   }, []);
 
   const handleLongPress = React.useCallback((card: Card) => {
+    vibrate();
     setMenuCard(card);
   }, []);
 
@@ -350,8 +370,8 @@ export default function SwipeDemoScreen() {
         <DemonstratesList items={DEMO.bullets} />
 
         <Text ml="$4" color="$text2" fontSize={13} lineHeight={18}>
-          Retour visuel uniquement : le retour haptique n'est pas encore disponible dans ce
-          template.
+          L'appui long vibre via l'API Vibration de React Native. Le retour haptique fin
+          (expo-haptics) n'est pas encore disponible dans ce template.
         </Text>
       </DemoScaffold>
 
