@@ -37,7 +37,7 @@ template** — verify routes with an ad-hoc check that every `route:` in `catalo
 | Dataverse URL | `https://chinnin-tech-dev.crm4.dynamics.com/` |
 | Tenant | `chin-nin.tech` — `be91cf8c-1bdb-4e16-9c30-5276f42e7e8b` |
 | Data platform | **connector-only** — no Dataverse table, nothing persisted. One connector: `shared_office365users` |
-| App ID | not minted yet (`power.config.json` → `appId: null`) — never pushed |
+| App ID | `5d960c86-11be-4f60-9460-af5a77f4c6b5` — first pushed to DEV 2026-09-23 (two cycles, ID compiled into both `.hbc`) |
 | Auth | `auth.config.json` → clientId `cd78c035-…` (« TEMP - Demo Mobile Native »), tenant `be91cf8c-…` |
 
 Implemented (2026-09-22 glassmorphism pass): a native-capability demonstrator, **14 catalogue rows —
@@ -128,8 +128,9 @@ The app's bundle id is still the template placeholder `com.contoso.powerappsapp`
 
 ### Before the first device run
 
-`npx power-apps push` has never run, so there is no app ID. To load the app on a device:
-`npm run dev` (Metro + QR) and scan from the Power Apps Mobile Preview app.
+The app is pushed to DEV (app ID above; `power.config.json` is gitignored, so the ID lives only
+locally and in `memory-bank.md`). To iterate on a device: `npm run dev` (Metro + QR) and scan from
+the Power Apps Mobile Preview app. Re-deploys need a single build → push cycle now.
 
 **Two separate sign-ins, two different tenants by default.** `npx power-apps` is authenticated as
 `theophile@chin-nin.tech` (its own MSAL cache). `az` was pointed at the same tenant with

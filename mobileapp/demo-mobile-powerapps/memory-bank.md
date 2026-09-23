@@ -35,6 +35,10 @@ This file is the per-project notebook the agent maintains across `/create-mobile
 | Solution unique name | _n/a — connector-only app, no Dataverse metadata written_ |
 | Publisher prefix | _n/a — connector-only_ |
 | `playerConfig.ts` last modified by | _untouched_ |
+| App ID | `5d960c86-11be-4f60-9460-af5a77f4c6b5` — minted by the first push 2026-09-23 |
+| Current version | v1.0.0 |
+| Last deployed | 2026-09-23 (DEV) |
+| App URL | https://apps.powerapps.com/play/e/d6b0b2cd-588d-4cb1-b657-6a8ad7951d40/a/5d960c86-11be-4f60-9460-af5a77f4c6b5?tenantId=be91cf8c-1bdb-4e16-9c30-5276f42e7e8b |
 
 > **az note:** the Dataverse helper scripts take their token from `az`, whose default context was the
 > `aglgroup.com` tenant. Run `az account set --subscription 1a97b4ad-ea5c-4f4b-a9cb-c4bd6164742d`
@@ -151,6 +155,8 @@ _Written by `/add-sample-data`. Tracks records inserted so re-runs are idempoten
 | 2026-09-22 | connecteur office365users + avatar O365 dans l'en-tête d'accueil | `generate-schemas` 1 connecteur, `tsc` 0, validateurs 0 issue |
 | 2026-09-22 | test device via Power Apps Mobile Preview | bundle iOS OK (8,8 s / 2577 modules) ; appel connecteur office365users **200** confirmé dans le log Metro |
 | 2026-09-22 | portage du prototype Claude Design (accueil + détail générique) | `tsc` 0, `check-routes` 0, qualité 0, contraste 0 après correction de 2 tokens |
+| 2026-09-23 | v1.0.0 — /deploy cycle 1 (web + Hermes android/ios, appId vide) → push DEV | success — appId `5d960c86-…` minted |
+| 2026-09-23 | v1.0.0 — /deploy cycle 2 (rebuild avec appId compilé, vérifié dans les 2 `.hbc`) → push DEV | success |
 
 
 | Date | Platform | Result | Notes |

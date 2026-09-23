@@ -5,5 +5,6 @@
   "tenantId": "be91cf8c-1bdb-4e16-9c30-5276f42e7e8b",
   "clusterEnvironment": "Prod",
   "clusterGeoName": "EU",
-  "source": "cache"
+  "source": "cache",
+  "cachedAt": "2026-09-23T10:04:22.656Z"
 }
