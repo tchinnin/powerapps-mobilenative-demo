@@ -8,7 +8,7 @@ export const tokens = {
     bg: '#f2f2f7',
     surface: '#ffffff',
     primary: '#742774',
-    accent: '#742774',
+    accent: '#f4ecf4', // → $accentSoft (icon chips); must stay a pale tint, never = primary
     text: '#000000',
     textMuted: '#6c6c70',
     border: '#c6c6c8',

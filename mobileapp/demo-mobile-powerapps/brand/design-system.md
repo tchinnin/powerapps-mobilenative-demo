@@ -14,7 +14,7 @@ Generated: 2026-09-22 | Direction: iOS-native démonstrateur
 | bg | `#f2f2f7` | fond d'écran groupé iOS |
 | surface | `#ffffff` | cartes, lignes de liste |
 | primary | `#742774` | violet Power Apps — CTA, liens, icônes actives |
-| accent | `#742774` | identique au primary (une seule teinte de marque) |
+| accent | `#f4ecf4` | primary à 10 % — devient `$accentSoft` (fond des pastilles d’icône). Ne jamais le remettre égal au primary : glyphe violet sur fond violet |
 | text | `#000000` | texte primaire |
 | textMuted | `#6c6c70` | sous-titres, légendes, en-têtes de section |
 | border | `#c6c6c8` | séparateurs de liste (opaque, dérivé de `#3c3c434a`) |
