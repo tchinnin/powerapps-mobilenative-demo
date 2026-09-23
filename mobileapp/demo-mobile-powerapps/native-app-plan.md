@@ -46,8 +46,18 @@ added (hard rule 2, native module boundary).
 | `audio` | `expo-audio` 55.0.14 | `src/native/audio.ts` | `/voice` |
 | `location` (one-shot, foreground) | `expo-location` 55.1.9 | `src/native/location.ts` | `/geolocation` |
 | `biometrics` | `expo-local-authentication` 55.0.13 | `src/native/biometrics.ts` | `/face-id` |
-| touch gestures | `react-native` `PanResponder` + `react-native-reanimated` | — (in-screen) | `/swipe` |
+| touch gestures | `react-native-gesture-handler` 2.30.1 + `react-native-reanimated` 4.2.1 (UI thread; root `GestureHandlerRootView` in `app/_layout.tsx`) | — (in-screen) | `/swipe`, `/gestures` |
+| vibration | `react-native` core `Vibration` (not `expo-haptics`) — iOS plays the fixed system buzz, Android honours the duration | — (in-screen) | `/swipe` (long press) |
 | `device-info` | `expo-device` | — (in-screen) | `/infos` |
+| `toast` (system toast / alert + native haptic) | `burnt` 0.12.2 | `src/native/toast.ts` | `/toasts` |
+
+**`burnt` notes.** iOS is a real Expo module (`BurntModule.swift` → SPIndicator / SPAlert); its
+`haptic` option is played by that Swift code, **not** by `expo-haptics` (still banned). Android has
+no native code: burnt maps both calls onto `ToastAndroid`, title only. Web needs `sonner` + a root
+`<Toaster />`, deliberately not added — the screen shows a « démo native uniquement » notice.
+burnt calls `requireNativeModule('Burnt')` at module scope, so the wrapper loads it with a lazy
+`require` inside `try/catch`: a binary without the module yields `unavailable`, not a crash.
+**Unverified on device** until someone runs `/toasts` on an iPhone through the Preview player.
 
 ### Blocked — and why
 
@@ -103,17 +113,19 @@ inside a tab stack and drawn the pill over the detail pages.
 | `/qr-code` | Lecture de QR code | `expo-camera` |
 | `/voice` | Mémo vocal | `expo-audio`, live metering waveform |
 | `/geolocation` | Géolocalisation | `expo-location`, one-shot + reverse geocode |
-| `/swipe` | Swipe et appui long | `PanResponder`, no haptics |
+| `/swipe` | Swipe et appui long | `Gesture.Race(pan, longPress)` — menu opens while held; `Vibration` on open |
+| `/gestures` | Pincer, pivoter, glisser | `Gesture.Simultaneous(pinch, rotation, pan, doubleTap)`; focal-point zoom 0.5×–4×, 90° rotation snap, adjustable a11y zoom; `DemoScaffold scrollEnabled` off while touching |
 | `/face-id` | Face ID | `expo-local-authentication` |
+| `/toasts` | Toasts et alertes | `burnt` — toast/alerte, presets, position, spinner d'envoi, vibration native iOS |
 
 ### Shared chrome
 
 `src/components/DemoScreen.tsx` owns the whole demo page frame. `DemoScaffold` wraps
 `AppBackground` + `SafeAreaView(['top','bottom'])` + back link + scroll body + pinned CTA bar; all
-six demo screens supply only their hero content, their capability-specific section, and what the CTA
+eight demo screens supply only their hero content, their capability-specific section, and what the CTA
 does.
 
-> **Validator note.** `validate-screen-quality.js` reports `missing-safe-area-chrome` on all six
+> **Validator note.** `validate-screen-quality.js` reports `missing-safe-area-chrome` on all eight
 > demo screens. This is a **false positive**: the validator is per-file and cannot see that
 > `DemoScaffold` applies `SafeAreaView`. Confirmed handled centrally. Do not "fix" it by adding
 > redundant per-screen safe-area wrappers.

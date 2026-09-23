@@ -26,7 +26,7 @@ pass it as `--working-dir` when a skill takes one, and `cd` into it before any `
 ## Current state
 
 The app is scaffolded and runs off the plan below. `npx tsc --noEmit` and the contrast validator are
-clean; the screen-quality validator reports 6 false-positive `missing-safe-area-chrome` (it cannot
+clean; the screen-quality validator reports 7 false-positive `missing-safe-area-chrome` (it cannot
 see that `DemoScaffold` applies `SafeAreaView`). **There is no `scripts/check-routes.js` in this
 template** — verify routes with an ad-hoc check that every `route:` in `catalog.ts` has a file.
 
@@ -40,8 +40,8 @@ template** — verify routes with an ad-hoc check that every `route:` in `catalo
 | App ID | not minted yet (`power.config.json` → `appId: null`) — never pushed |
 | Auth | `auth.config.json` → clientId `cd78c035-…` (« TEMP - Demo Mobile Native »), tenant `be91cf8c-…` |
 
-Implemented (2026-09-22 glassmorphism pass): a native-capability demonstrator, **13 catalogue rows —
-6 real, 7 greyed « Bientôt »**, plus a floating Démos/Infos tab pill.
+Implemented (2026-09-22 glassmorphism pass): a native-capability demonstrator, **14 catalogue rows —
+7 real, 7 greyed « Bientôt »**, plus a floating Démos/Infos tab pill.
 
 ```
 app/(app)/home.tsx        "Démos" — search, 4-way segment filter, grouped sections, greyed rows
@@ -51,11 +51,12 @@ app/(app)/qr-code.tsx     Lecture de QR code — expo-camera
 app/(app)/voice.tsx       Mémo vocal — expo-audio, live metering waveform
 app/(app)/geolocation.tsx Géolocalisation — expo-location, one-shot + reverse geocode
 app/(app)/face-id.tsx     Face ID — expo-local-authentication
+app/(app)/toasts.tsx      Toasts et alertes — burnt, native iOS haptic (lazy require)
 app/(app)/swipe.tsx       Swipe + appui long — PanResponder (NOT gesture-handler, see below)
 src/demos/catalog.ts            discriminated union: ReadyDemo (has route) | UpcomingDemo (blockedBy)
-src/native/{camera,barcodeScanner,audio,location,biometrics}  capability wrappers
+src/native/{camera,barcodeScanner,audio,location,biometrics,toast}  capability wrappers
 src/components/Glass.tsx        AppBackground / GlassCard / GlassDivider / MediaStripes
-src/components/DemoScreen.tsx   demo chrome + DemoScaffold (owns SafeAreaView for all 6 demos)
+src/components/DemoScreen.tsx   demo chrome + DemoScaffold (owns SafeAreaView for all 7 demos)
 src/components/TabBar.tsx       floating pill; `replace`, never `push`
 src/components/ProfileAvatar.tsx  O365 photo + tap-to-open menu
 brand/tokens.ts                 `tokens` (Tamagui scales) + `glass` (glassmorphism recipe)
@@ -91,7 +92,7 @@ system-browser consent or the built-in picker is not wanted.
 
 Navigation is a plain Stack (`app/(app)/_layout.tsx`, headers hidden). Demo screens **push**; the
 two tab destinations **replace**, so switching tabs never grows the stack. Safe area is owned
-centrally by `DemoScaffold` for the six demo screens, and per-screen on `/home` and `/infos`.
+centrally by `DemoScaffold` for the seven demo screens, and per-screen on `/home` and `/infos`.
 Not started yet: any data persistence, and a non-TEMP Entra client ID.
 
 **`expo-haptics` stays banned.** It *is* in `package.json` (55.0.16) — but its native module is not
@@ -155,7 +156,7 @@ ground with three static artboards. The Design project supersedes it; keep the c
 
 **The prototype is still wider than this app, and now deliberately so in a different way.** Its
 updated DEMOS array marks `shake` and `sign` as ready; neither can ship here (no `expo-sensors`, no
-`pen-input` control). The app's catalogue is the honest subset: 6 real rows, 7 greyed, and the two
+`pen-input` control). The app's catalogue is the honest subset: 7 real rows, 7 greyed, and the two
 sensor rows dropped entirely. `blockedBy` in `catalog.ts` records the reason for each. See
 `memory-bank.md` `### Edit: 2026-09-22` before widening it.
 

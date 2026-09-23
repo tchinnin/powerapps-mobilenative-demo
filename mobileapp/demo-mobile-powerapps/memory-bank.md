@@ -115,6 +115,9 @@ registration câblée en amont.
 | `app/(app)/home.tsx` | Catalogue | `Power Apps Mobile.dc.html` | orchestrator | recherche + filtre segmenté 4 voies + sections groupées + état vide + verrou de navigation |
 | `app/(app)/photo.tsx` | Demo detail | `Power Apps Mobile.dc.html` | orchestrator | chrome prototype + caméra/galerie réelles, métadonnées image |
 | `app/(app)/qr-code.tsx` | Demo detail | `Power Apps Mobile.dc.html` | orchestrator | chrome prototype + scanner live dans le panneau héros |
+| `app/(app)/gestures.tsx` | Demo detail | `native-app-plan.md` | orchestrator (inline) | pincer/pivoter/glisser simultanés (gesture-handler + reanimated), zoom focal, aimantation 90°, double-tap, zoom accessible |
+| `app/(app)/toasts.tsx` | Demo detail | `native-app-plan.md` | orchestrator (inline) | toast/alerte burnt, presets, position iOS, spinner d'envoi, vibration native burnt (Swift), notices Android/web |
+| `src/native/toast.ts` | Native wrapper | — | orchestrator (inline) | `burnt` chargé en `require` paresseux + try/catch → `unavailable` si module natif absent |
 | `src/demos/catalog.ts` | Data | `Power Apps Mobile.dc.html` | orchestrator | catalogue typé : 2 démos sur les 12 du prototype |
 | `src/components/DemoScreen.tsx` | Shared chrome | `Power Apps Mobile.dc.html` | orchestrator | back, titre, panneau héros sombre + scanline, pastilles 4 tons, checklist, carte résultat, CTA |
 | `src/components/ProfileAvatar.tsx` | Header widget | — | orchestrator | photo O365 en haut à droite du titre ; repli initiales puis icône ; tap → menu Popover (nom complet) |
@@ -264,3 +267,60 @@ _Append items here. Mark resolved with strikethrough rather than deleting._
 - **Blocks/concerns:** aucun blocage. Les 4 nouveaux écrans compilent et sont typés, mais
   **aucun n'a été exercé sur un appareil réel** : micro, GPS et biométrie demandent une permission
   native qui ne peut pas être testée depuis le poste de dev. À valider au prochain `npm run dev`.
+
+### Edit: 2026-09-23 — Démo « Toasts et alertes » (burnt + haptique native)
+- Request: « ajouter une feature sur toast et alerte natives (burnt) » puis « ajoute aussi l'haptic
+  natif embarqué dans burnt via swift direct ».
+- Intent brief: nouvelle démo `/toasts`, groupe Système ; capacité `burnt` 0.12.2 (template) ;
+  aucune donnée, aucun connecteur, aucun changement de design.
+- Assumptions: « haptic via swift direct » = option `haptic` de burnt, jouée par
+  `BurntModule.swift` (SPIndicator/SPAlert). Aucun code Swift écrit — impossible sous la frontière
+  module natif. `expo-haptics` reste banni.
+- Skills/agents invoked: `/edit-app` ; planification et écran faits inline (1 écran, pas de wave).
+- Plan sections changed: Native Capabilities (Wired + notes burnt), Screens.
+- App changes: `src/native/toast.ts` (nouveau), `app/(app)/toasts.tsx` (nouveau),
+  `src/demos/catalog.ts` (`DemoRoute` + ligne `toasts`, ready). Layout inchangé (Stack implicite).
+- Findings qui comptent :
+  - burnt iOS fait `requireNativeModule('Burnt')` **au chargement du module** : un `import` statique
+    ferait planter la route si le binaire de rewrap n'embarque pas le module (cas expo-haptics).
+    D'où le `require` paresseux dans le wrapper.
+  - Le type TS `AlertOptions` de burnt n'a pas `haptic`, mais le Swift le lit (`@Field var haptic`) :
+    le wrapper élargit le payload.
+  - Android = `ToastAndroid` pur JS : titre seul, pas de preset/message/haptique,
+    `dismissAllAlerts()` no-op. Web = nécessite `sonner` + `<Toaster />`, non ajouté.
+- Verification: `npx tsc --noEmit` ✅ ; routes catalogue 7/7 ✅ ; contrast ✅ 0 ; screen-quality ⚠️ 1 ×
+  `missing-safe-area-chrome` (faux positif DemoScaffold connu).
+- Preview: non générée (le preview statique ne rend pas les toasts système).
+- Debug handoff: non demandé.
+- Blocks/concerns: **DONE_WITH_CONCERNS** — la présence du module natif Burnt dans le binaire
+  Preview / rewrap n'est pas vérifiée. Tester `/toasts` sur iPhone : si la notice « module natif
+  Burnt n'est pas embarqué » s'affiche, repasser la ligne en `ready: false` avec un `blockedBy`.
+
+### Edit: 2026-09-23 — Démo « Pincer, pivoter, glisser » + appui long natif sur /swipe
+- Request: appui long de `/swipe` qui ouvre le menu sans relâcher + vibration sans expo-haptics ;
+  puis « ajouter des gestures natifs comme pincer ou glisser, qui rendent bien en natif ».
+- Intent brief: `/swipe` corrigé ; nouvelle démo `/gestures`, groupe Capteurs ; aucune donnée,
+  aucun connecteur, aucun paquet ajouté, aucun changement de design.
+- Assumptions: `GestureHandlerRootView` était déjà branché (`app/_layout.tsx`, depuis `fd14ebd`) —
+  la mention « PanResponder / root non branché » de CLAUDE.md était périmée.
+- Skills/agents invoked: `/edit-app` ; écran construit inline (1 écran, pas de wave).
+- Plan sections changed: Native Capabilities (touch gestures, vibration), Screens.
+- App changes: `app/(app)/gestures.tsx` (nouveau) ; `src/demos/catalog.ts` (`DemoRoute` + ligne
+  `gestures` ready, puces `swipe`) ; `src/components/DemoScaffold` → prop optionnelle
+  `scrollEnabled` (rétro-compatible) ; `app/(app)/swipe.tsx` → `Gesture.Race` + `Vibration`.
+- Points techniques à ne pas re-découvrir :
+  - `Gesture.Exclusive(pan, longPress)` fait attendre l'échec du pan, donc le relâchement : le
+    menu s'ouvrait au lâcher. `Race` = le premier qui s'active annule l'autre.
+  - `Vibration.vibrate(ms)` : iOS ignore la durée (buzz système ~400 ms, pas un « tic ») ;
+    Android respecte 15 ms mais exige la permission `VIBRATE` dans le binaire (non vérifié).
+  - `/gestures` applique les deltas `onChange` (`scaleChange`, `rotationChange`, `changeX/Y`)
+    autour du point focal / de l'ancre : les trois gestes composent sans double translation.
+  - La scène est dans le ScrollView de `DemoScaffold` : `scrollEnabled` passe à false de
+    `pan.onBegin` à `onFinalize`, sinon un glisser vertical fait défiler la page.
+- Verification: `npx tsc --noEmit` ✅ ; routes catalogue 8/8 ✅ ; contrast ✅ 0 ;
+  screen-quality ⚠️ 1 × `missing-safe-area-chrome` (faux positif DemoScaffold, identique aux 7
+  autres démos) ; `validate-mobile-files` exit 2 pour la même raison.
+- Preview: non générée (le preview statique ne rend pas les gestes).
+- Debug handoff: non demandé.
+- Blocks/concerns: **DONE_WITH_CONCERNS** — non testé sur appareil ; ressenti du zoom focal et de
+  la bascule `scrollEnabled` en cours de geste à valider sur iPhone.
