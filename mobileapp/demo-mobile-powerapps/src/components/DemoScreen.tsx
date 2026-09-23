@@ -311,11 +311,17 @@ export function DemoScaffold({
   onBack,
   children,
   footer,
+  scrollEnabled = true,
 }: {
   onBack: () => void;
   children: React.ReactNode;
   /** The pinned action bar. Omit for a demo whose interaction is inline. */
   footer?: React.ReactNode;
+  /**
+   * Off while a demo owns the finger (e.g. a canvas being pinched), so the body
+   * does not scroll under a vertical drag that belongs to the gesture.
+   */
+  scrollEnabled?: boolean;
 }) {
   return (
     <AppBackground>
@@ -325,7 +331,7 @@ export function DemoScaffold({
             <DemoBackLink onPress={onBack} />
           </YStack>
 
-          <ScrollView contentContainerStyle={{ paddingBottom: 16 }}>
+          <ScrollView contentContainerStyle={{ paddingBottom: 16 }} scrollEnabled={scrollEnabled}>
             <YStack px="$4" gap="$4.5">
               {children}
             </YStack>

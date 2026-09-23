@@ -30,7 +30,8 @@ export type DemoRoute =
   | '/geolocation'
   | '/swipe'
   | '/face-id'
-  | '/toasts';
+  | '/toasts'
+  | '/gestures';
 
 export type DemoTag = { label: string; tone: TagTone };
 
@@ -252,6 +253,31 @@ export const DEMOS: Demo[] = [
       'Vibration à l’ouverture du menu (sans expo-haptics)',
     ],
     resultLabel: 'Cartes réinitialisées',
+  },
+  {
+    id: 'gestures',
+    ready: true,
+    route: '/gestures',
+    group: 'sensors',
+    icon: 'expand-outline',
+    title: 'Pincer, pivoter, glisser',
+    subtitle: 'Gestes multi-touch natifs',
+    long: 'Manipuler un plan à deux doigts : zoom au pincement, rotation, déplacement — les trois en même temps, sans saccade.',
+    hero: '[Plan manipulable]',
+    cta: 'Recentrer le plan',
+    running: 'Recentrage…',
+    tags: [
+      { label: 'Multi-touch', tone: 'tint' },
+      { label: 'Fonctionne hors-ligne', tone: 'green' },
+      { label: 'Thread UI natif', tone: 'blue' },
+    ],
+    bullets: [
+      'Zoom centré sous les doigts, de 0,5× à 4×',
+      'Rotation à deux doigts, aimantée tous les 90°',
+      'Pincer, pivoter et glisser en simultané',
+      'Double-tap pour recentrer',
+    ],
+    resultLabel: 'Transformation',
   },
   {
     id: 'haptics',
