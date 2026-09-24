@@ -123,8 +123,16 @@ Wired registration: `cd78c035-9fed-464c-90cb-e82d95be65f6` — delegated scopes 
 Power Platform API, PowerApps Service, Azure API Connections and Microsoft Graph. Its `TEMP` name
 suggests it is disposable; recreate one from the Wrap page and swap `msal.clientId` if it vanishes.
 
-The app's bundle id is still the template placeholder `com.contoso.powerappsapp` — set it in
-`app.config.js` and add the matching `msauth.<bundleId>://auth` redirect before any release wrap.
+Bundle id / Android package: `tech.chinnin.demopowerapps1` — `app.config.js`, the Wrap project
+(`msdyn_mobileapps`), and the `msauth.tech.chinnin.demopowerapps1://auth` redirect on the registration
+all agree (2026-09-23). Change all three together or the release sign-in breaks.
+
+Wrap output is **Azure Blob** (`stapowerappswrapping` / `ctn-powerappswrapping`, key in Key Vault
+`kv-powserappswrapping` secret `blobkey` = storage key1). Tags, secrets, `certios` cert and the
+« Wrap Key Vault Access App » access policy are verified. **Open blocker (2026-09-23):** every build
+fails in `msdyn_MobileAppBuild` with `0x80040265` « SAS URL is not a valid Dataverse organization
+endpoint », with Dataverse *and* Blob output alike — so it is not the output storage. Undocumented;
+server-side, private preview. Not yet root-caused.
 
 ### Before the first device run
 

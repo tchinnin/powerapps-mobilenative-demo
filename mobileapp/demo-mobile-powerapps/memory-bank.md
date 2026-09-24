@@ -13,8 +13,8 @@ This file is the per-project notebook the agent maintains across `/create-mobile
 | Display name | demo mobile powerapps |
 | Slug | demo-mobile-powerapps |
 | Scheme | demo-mobile-powerapps |
-| iOS bundle id | template default (patched by wrap at release) |
-| Android bundle id | template default (patched by wrap at release) |
+| iOS bundle id | `tech.chinnin.demopowerapps1` (set 2026-09-23, matches the Wrap project) |
+| Android bundle id | `tech.chinnin.demopowerapps1` (set 2026-09-23) |
 | Working directory | `/Users/tchinnin/git/TCH/powerapps-mobilenative-demo/mobileapp/demo-mobile-powerapps` |
 | Plugin version that created the project | mobile-app 0.3.3 |
 | Created | 2026-09-22 |
@@ -187,8 +187,14 @@ _Written by `/add-sample-data`. Tracks records inserted so re-runs are idempoten
   registration via la page Wrap de l'environnement DEV et remplacer `msal.clientId`.
 - **Le wrap release exigera un redirect supplémentaire.** Le broker MSAL est actif en build release
   (`useBroker` = `!__DEV__`) et réclame `msauth.<bundleId>://auth` sur la registration. Le bundle id
-  est encore la valeur template `com.contoso.powerappsapp` (`app.config.js`) — à fixer avant tout wrap,
-  puis ajouter le redirect correspondant.
+  ~~est encore la valeur template `com.contoso.powerappsapp` (`app.config.js`) — à fixer avant tout wrap,
+  puis ajouter le redirect correspondant.~~ **Résolu 2026-09-23** : bundle id `tech.chinnin.demopowerapps1`
+  dans `app.config.js` + projet Wrap, redirect `msauth.tech.chinnin.demopowerapps1://auth` ajouté.
+- **Wrap : sortie Azure Blob** (`stapowerappswrapping` / `ctn-powerappswrapping`, Key Vault
+  `kv-powserappswrapping`, secret `blobkey` = key1 du compte). Config vérifiée (tags, secrets, cert,
+  access policy du SP Wrap). **Bloquant non résolu** : le build échoue dans `msdyn_MobileAppBuild`
+  (`0x80040265` « SAS URL is not a valid Dataverse organization endpoint ») en sortie Dataverse *comme*
+  Blob — ce n'est donc pas le stockage de sortie. Erreur non documentée, côté service (preview).
 
 
 _Append items here. Mark resolved with strikethrough rather than deleting._

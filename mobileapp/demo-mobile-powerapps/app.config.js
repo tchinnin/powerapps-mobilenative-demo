@@ -5,8 +5,8 @@ const { createPowerAppsExpoConfig } = require('@microsoft/power-apps-native-host
 const APP_NAME = process.env.APP_DISPLAY_NAME || 'demo mobile powerapps';
 const APP_SLUG = process.env.APP_SLUG || 'demo-mobile-powerapps';
 const APP_SCHEME = process.env.APP_SCHEME || APP_SLUG;
-const ANDROID_PACKAGE = process.env.ANDROID_PACKAGE || 'com.contoso.powerappsapp';
-const IOS_BUNDLE_IDENTIFIER = process.env.IOS_BUNDLE_IDENTIFIER || 'com.contoso.powerappsapp';
+const ANDROID_PACKAGE = process.env.ANDROID_PACKAGE || 'tech.chinnin.demopowerapps1';
+const IOS_BUNDLE_IDENTIFIER = process.env.IOS_BUNDLE_IDENTIFIER || 'tech.chinnin.demopowerapps1';
 
 // App icon — set APP_ICON_PATH to a 1024×1024 PNG before running expo prebuild.
 // Expo uses this single image to generate all required icon sizes for both
